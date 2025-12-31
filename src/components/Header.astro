@@ -1,0 +1,15 @@
+---
+// You can pass props here, like a custom title or version number
+const { version = "Ver. 2025.A" } = Astro.props;
+---
+
+<header class="col-span-12 border-t-2 border-brand-black py-4 flex justify-between items-start mb-24">
+    <div class="flex flex-col font-black text-xl leading-extra-tight tracking-tightest">
+        <span>HAPPY</span>
+        <span>MEDIA</span>
+        <span>STRATEGY</span>
+    </div>
+    <div class="font-mono text-[10px] uppercase opacity-60">
+        {version} //
+    </div>
+</header>

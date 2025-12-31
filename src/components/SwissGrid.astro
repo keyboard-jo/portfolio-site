@@ -1,0 +1,28 @@
+<div class="grid-overlay fixed inset-0 z-[999] pointer-events-none px-6">
+  <div class="grid grid-cols-12 gap-6 h-full w-full">
+    {[...Array(12)].map((_, i) => (
+      <div class="h-full bg-brand-red opacity-[0.03] border-x border-brand-red/10">
+        <span class="font-mono text-[8px] p-1 text-brand-red opacity-30">{i + 1}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  /* Optional: Hide the grid by default, show it when you press 'G' */
+  .grid-overlay {
+    display: none;
+  }
+  :global(.show-grid) .grid-overlay {
+    display: block;
+  }
+</style>
+
+<script>
+  // Simple toggle logic: Press 'G' to see the grid
+  window.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'g') {
+      document.body.classList.toggle('show-grid');
+    }
+  });
+</script>
