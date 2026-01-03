@@ -1,0 +1,139 @@
+---
+id: "A003"
+permalink: "nano-banana-cli"
+title: "Nano Banana CLI"
+subtitle: "A simple CLI wrapper for Nano Banana Pro and Veo"
+coverImage: "./nano-banana-cli-hero.png"
+date: 2026-01-03
+tags: ["AI", "Nano Banana", "Veo", "Software Development"]
+---
+import SpecTable from '../../../components/SpecTable.astro';
+import BookmarkCard from '../../../components/BookmarkCard.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import Credits from '../../../components/Credits.astro';
+export const projectCredits = [
+  { role: "nano-banana-cli", name: "Me", link: "https://www.youtube.com/watch?v=Miuv0-OWv6E&t=439s" },
+  { role: "Image Generation Doc", name: "Google", link: "https://ai.google.dev/gemini-api/docs/image-generation" },
+  { role: "Video Generation Doc", name: "Google", link: "https://ai.google.dev/gemini-api/docs/video" },
+
+];
+
+
+## 00 // Introduction
+To create AI-generated images and videos for my first spec project and AI character creation, I mainly relied on my own software. This article introduces **nano-banana-cli**, an unofficial CLI wrapper for the Gemini API. In short, it allows you to generate images using Nano Banana and videos using Veo directly from the command line.
+
+<BookmarkCard url="https://github.com/keyboard-jo/nano-banana-cli" />
+There was no particular reason I chose to build a CLI wrapper. I simply thought it would be a cool and simple project—something lightweight that could also be reused in other software projects if needed. By providing your `GEMINI_API_KEY`, you can access the full capabilities of the Gemini API through this CLI.
+
+## 01 // Features
+The CLI has two main functions: **image generation** and **video generation**.
+
+<SpecTable 
+  title="Image Parameters"
+  data={[
+    { label: "Models", value: "gemini-2.5-flash-image, gemini-3-pro-image-preview" },
+    { label: "Aspect Ratio", value: "1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9" },
+    { label: "Resolutions", value: "1K, 2K, 4K" }
+  ]} 
+/>
+
+<SpecTable 
+  title="Video Parameters"
+  data={[
+    { label: "Models", value: "veo-2.0-generate-001, veo-3.1-generate-preview, veo-3.0-generate-001, veo-3.1-fast-generate-preview, veo-3.0-fast-generate-001" },
+    { label: "Aspect Ratio", value: "16:9, 9:16" },
+    { label: "Resolutions", value: "720p, 1080p" },
+    { label: "Durations", value: "4, 6, 8" },
+    { label: "Generation Type", value: "zero-shot, start frame last frame, reference images" }
+  ]} 
+/>
+
+Not all parameters are supported by every model. Each model requires and supports a specific set of parameters by default. Please refer to this [image documentation][img-doc-web] and [video documentation][vid-doc-web].
+
+## 02 // Installation
+To install the CLI, you will need **Git** and **Python** installed on your system.
+
+First, clone the repository:
+<CodeBlock 
+  lang="bash"
+  code={`git clone https://github.com/yourusername/nano-banana-cli.git
+cd nano-banana-cli`} 
+/>
+
+Create and activate a virtual environment:
+<CodeBlock 
+  lang="bash"
+  code={`python -m venv .venv
+source .venv/bin/activate  # macOS / Linux
+.venv\Scripts\activate     # Windows`} 
+/>
+
+Install the dependencies:
+<CodeBlock 
+  lang="bash"
+  code={`pip install -r requirements.txt`} 
+/>
+
+Create `.env` file in project root:
+<CodeBlock
+  filename=".env"
+  lang=".env"
+  code={`GEMINI_API_KEY=your_api_key_here`} 
+/>
+
+## 03 // Usage
+### Image generation
+
+The following command generates a **2K image** using **Nano Banana Pro** with **two reference images**:
+<CodeBlock 
+  lang="bash"
+  code={`python cli.py image \
+  --prompt "A fashion photoshoot of the same person" \
+  --model gemini-3-pro-image-preview \
+  --image-paths face_ref.png body_ref.png \
+  --resolution 2K \
+  --output fashion.png`} 
+/>
+
+### Video generation
+This command generates a **6-second**, **1080p**, **16:9** video using **Veo 3.1 Fast** (the default model):
+<CodeBlock 
+  lang="bash"
+  code={`python cli.py video \
+  --prompt "Slow-motion ocean waves crashing against rocks" \
+  --resolution 1080p \
+  --aspect-ratio 16:9 \
+  --duration_seconds 6 \
+  --output waves.mp4`} 
+/>
+
+
+### Using start and end frames
+You can guide video generation using a starting and ending frame:
+<CodeBlock 
+  lang="bash"
+  code={`python cli.py video \
+  --prompt "A person walking through a futuristic city" \
+  --first-frame start.png \
+  --last-frame end.png \
+  --output city_walk.mp4`} 
+/>
+
+### Using reference images
+Reference images can be used to maintain character or style consistency:
+<CodeBlock 
+  lang="bash"
+  code={`python cli.py video \
+  --prompt "A cinematic fashion walk with realistic lighting" \
+  --reference character.png outfit.png \
+  --model veo-3.1-fast-generate-preview \
+  --output fashion_walk.mp4`} 
+/>
+
+Full documentation and additional examples are available in the [GitHub repository][git-repo].
+
+## 04 // References
+<Credits credits={projectCredits} />
+[img-doc-web]: https://ai.google.dev/gemini-api/docs/image-generation
+[vid-doc-web]: https://ai.google.dev/gemini-api/docs/video?example=dialogue
+[git-repo]: https://github.com/keyboard-jo/nano-banana-cli
