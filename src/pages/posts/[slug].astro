@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import ZoomImage from '../../components/ZoomImage.astro';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const postEntries = await getCollection('posts');
+  return postEntries.map(entry => ({
+    params: { slug: entry.data.permalink }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render(); // This converts MD to HTML
+const { id, title, coverImage, date, subtitle, zoom } = entry.data;
+const formattedDate = date.toLocaleDateString('sv-SE');
+---
+
+<Layout title={entry.data.title}>
+    <main class="relative z-10 grid grid-cols-12 gap-6 px-6 py-12 bg-transparent text-brand-black font-sans">
+        <Header/>
+
+        <header class="col-span-12 md:col-span-8">
+            <div class="font-mono text-[10px] text-brand-red mb-4">{id} // {formattedDate}</div>
+            <h1 class="text-6xl md:text-8xl font-black uppercase leading-[0.85] tracking-tightest mb-8">
+                {title}
+            </h1>
+            <p class="text-xl font-bold uppercase opacity-70 max-w-2xl">
+                {subtitle}
+            </p>
+        </header>
+
+        <div class="col-span-12 mb-12">
+            <div class="pswp-gallery">
+                <ZoomImage 
+                src={coverImage} 
+                alt={title}
+                loading="eager"
+                imageClass="h-[60vh] object-cover border-b-2 border-black grayscale contrast-125 hover:grayscale-0 transition-all duration-500"
+                />
+            </div>
+            <p class="font-mono text-[10px] mt-2 uppercase">Fig 01. // Hero Image</p>
+        </div>
+
+        <article class="col-span-12 md:col-span-6 md:col-start-4 relative">
+            <div class="flex flex-col gap-6 
+                        [&>p]:text-lg [&>p]:leading-relaxed [&>p]:text-brand-black/90
+                        
+                        [&>p_a]:text-brand-black [&>p_a]:underline [&>p_a]:underline-offset-4 
+                        [&>p_a]:decoration-black/20 hover:[&>p_a]:decoration-black/100 
+                        [&>p_a]:transition-all [&>p_a]:inline-flex [&>p_a]:items-center
+
+                        [&>p_a[href^='http']::after]:content-['↗'] [&>p_a::after]:ml-1 [&>p_a::after]:text-[10px] 
+                        [&>p_a::after]:no-underline [&>p_a::after]:opacity-50  
+
+                        [&>h2]:text-3xl [&>h2]:font-black [&>h2]:uppercase [&>h2]:mt-12 [&>h2]:mb-2
+                        [&>h3]:text-xl [&>h3]:font-bold [&>h3]:uppercase [&>h3]:mt-8
+                        [&>ul]:list-disc [&>ul]:ml-6 [&>ul]:space-y-2
+                        [&>ol]:list-decimal [&>ol]:ml-6 [&>ol]:space-y-2
+                        [&>blockquote]:border-l-4 [&>blockquote]:border-brand-red [&>blockquote]:pl-4 [&>blockquote]:italic
+                        [&>img]:w-full [&>img]:h-auto [&>img]:my-8 [&>img]:border [&>img]:border-black">
+                <Content />
+            </div>
+
+            <div class="sticky bottom-8 mt-12">
+                <a href="/" class="inline-block font-mono text-xs border-b border-black bg-brand-white/80 backdrop-blur-sm py-1 hover:text-brand-red hover:border-brand-red transition-colors">
+                    ← BACK TO INDEX
+                </a>
+            </div>
+        </article>
+
+        <Footer/>
+
+    </main>
+</Layout>
+
+<script>
+    import PhotoSwipeLightbox from 'photoswipe/lightbox';
+    import 'photoswipe/style.css';
+
+    const lightbox = new PhotoSwipeLightbox({
+        // Use a class so we can have multiple galleries/pairs on one page
+        gallery: '.pswp-gallery', 
+        children: 'a',
+        pswpModule: () => import('photoswipe')
+    });
+    lightbox.init();
+</script>

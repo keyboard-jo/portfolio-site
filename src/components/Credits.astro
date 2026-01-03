@@ -1,0 +1,51 @@
+---
+// Credits.astro
+interface Credit {
+  role: string;
+  name: string;
+  link?: string;
+}
+
+interface Props {
+  credits: Credit[];
+  title?: string;
+}
+
+const { credits, title = "Project Credits" } = Astro.props;
+---
+
+<section class="mt-12 mb-16 border-t border-black">
+  <div class="flex flex-col md:flex-row md:items-baseline py-8">
+    
+    <div class="w-full md:w-1/4 mb-8 md:mb-0">
+      <h2 class="font-mono text-[10px] uppercase tracking-[0.2em] text-black">
+        {title}
+      </h2>
+    </div>
+
+    <div class="w-full md:w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+      {credits.map((item) => (
+        <div class="flex flex-col border-l border-black/5 pl-4">
+          <span class="font-mono text-[9px] uppercase tracking-widest text-black/40 mb-2">
+            {item.role}
+          </span>
+          
+          {item.link ? (
+            <a 
+              href={item.link} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="font-mono text-[11px] uppercase tracking-wider text-black hover:text-brand-black/60 transition-colors underline decoration-black/10 underline-offset-4"
+            >
+              {item.name}
+            </a>
+          ) : (
+            <span class="font-mono text-[11px] uppercase tracking-wider text-black">
+              {item.name}
+            </span>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

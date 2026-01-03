@@ -1,0 +1,52 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { cn } from '../lib/utils';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  width?: number;        // Display width on the page (default 1200)
+  quality?: number;      // Zoom quality (default 90)
+  class?: string;        // Classes for the <a> tag
+  imageClass?: string;   // Classes for the <Image /> tag
+  loading?: "lazy" | "eager";
+}
+
+const { 
+  src, 
+  alt, 
+  width = 1200, 
+  quality = 90, 
+  class: className, 
+  imageClass, 
+  loading = "lazy" 
+} = Astro.props;
+
+// 1. We use the master dimensions directly from the source metadata
+const highRes = await getImage({ 
+  src: src, 
+  width: src.width, 
+  format: 'webp',
+  quality: quality 
+});
+
+const decoding = loading === "eager" ? "sync" : "async";
+---
+
+<a 
+  href={highRes.src} 
+  data-pswp-width={src.width} 
+  data-pswp-height={src.height} 
+  target="_blank"
+  class:list={["block cursor-zoom-in", className]}
+>
+  <Image 
+    src={src}
+    alt={alt} 
+    width={Math.min(width, src.width)}
+    loading={loading}
+    decoding={decoding}
+    format="webp"
+    class={cn("w-full h-auto", imageClass)} 
+  />
+</a>

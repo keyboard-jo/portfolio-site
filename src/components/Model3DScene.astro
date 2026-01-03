@@ -1,0 +1,200 @@
+---
+interface Props {
+  id: string; 
+  modelPath: string; 
+  label?: string;
+  caption?: string;
+  bgColor?: string; 
+  intensity?: number;
+  zoom?: boolean;
+  autoRotate?: boolean;
+}
+
+const { 
+  id, 
+  modelPath,
+  label, 
+  caption, 
+  bgColor, 
+  intensity = 1, 
+  zoom = true,
+  autoRotate = true 
+} = Astro.props;
+
+const isTransparent = !bgColor || bgColor === 'transparent';
+---
+
+<figure class="my-12 model-3d-section" id={id}>
+  <div class="flex flex-col">
+    <div aria-hidden="true" class="flex justify-between border-t border-black pt-1 mb-2 text-[9px] uppercase tracking-widest text-brand-black/50 font-mono">
+      <span>{label || id.toUpperCase()}</span>
+      <span class="interaction-indicator opacity-0 transition-opacity duration-300">INTERACTION ACTIVE</span>
+    </div>
+
+    <div 
+      class="relative w-full aspect-square border border-black/5 overflow-hidden group bg-neutral-50"
+      style={bgColor ? `background-color: ${bgColor};` : ''}
+    >
+      <div class="loader-overlay absolute inset-0 flex items-center justify-center z-30 transition-opacity duration-500 bg-inherit">
+        <div class="w-4 h-4 border-2 border-black/10 border-t-black animate-spin rounded-full"></div>
+      </div>
+
+      <button 
+        class="interaction-toggle absolute bottom-4 right-4 z-40 bg-black text-white px-4 py-2 text-[10px] uppercase tracking-widest font-mono hover:bg-neutral-800 transition-all active:scale-95 shadow-xl"
+        data-state="locked"
+      >
+        Tap to Interact
+      </button>
+
+      <div class="interaction-scrim absolute inset-0 z-20 cursor-default"></div>
+
+      <canvas 
+        class="three-canvas w-full h-full opacity-0 transition-opacity duration-700 outline-none pointer-events-none" 
+        data-model={modelPath}
+        data-intensity={intensity}
+        data-alpha={isTransparent.toString()}
+        data-zoom={zoom.toString()}
+        data-autorotate={autoRotate.toString()}
+      ></canvas>
+    </div>
+  </div>
+
+  {caption && (
+    <figcaption class="font-mono text-[10px] mt-4 text-brand-black/60 uppercase leading-relaxed max-w-2xl">
+      {caption}
+    </figcaption>
+  )}
+</figure>
+
+<script>
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+  import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+  const loader = new GLTFLoader();
+
+  function initScene(container: HTMLElement) {
+    const canvas = container.querySelector('.three-canvas') as HTMLCanvasElement;
+    const loaderOverlay = container.querySelector('.loader-overlay') as HTMLElement;
+    const toggleBtn = container.querySelector('.interaction-toggle') as HTMLButtonElement;
+    const scrim = container.querySelector('.interaction-scrim') as HTMLElement;
+    const indicator = container.querySelector('.interaction-indicator') as HTMLElement;
+    
+    if (!canvas || canvas.dataset.initialized === 'true') return;
+
+    const { model, intensity, alpha, zoom, autorotate } = canvas.dataset;
+
+    // 1. Scene & Renderer
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    camera.position.set(0, 0, 5);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: alpha === 'true',
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    // 2. Loop Lighting
+    const lightGroup = new THREE.Group();
+    const keyLight = new THREE.DirectionalLight(0xffffff, parseFloat(intensity ?? '1') * 1.2);
+    keyLight.position.set(3, 3, 4); 
+    lightGroup.add(keyLight);
+    const fillLight = new THREE.DirectionalLight(0xffffff, parseFloat(intensity ?? '1') * 0.4);
+    fillLight.position.set(-3, 1, 2); 
+    lightGroup.add(fillLight);
+    const backLight = new THREE.DirectionalLight(0xffffff, parseFloat(intensity ?? '1') * 0.7);
+    backLight.position.set(0, 2, -5);
+    lightGroup.add(backLight);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.2));
+    scene.add(lightGroup);
+
+    // 3. Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enabled = false; // Start disabled
+    controls.enableZoom = zoom === 'true';
+    controls.autoRotate = autorotate === 'true';
+    controls.autoRotateSpeed = 2.0;
+
+    // 4. Toggle Interaction Logic
+    toggleBtn?.addEventListener('click', () => {
+      const isLocked = toggleBtn.dataset.state === 'locked';
+      
+      if (isLocked) {
+        // Unlock interaction
+        toggleBtn.dataset.state = 'unlocked';
+        toggleBtn.textContent = 'Lock View';
+        controls.enabled = true;
+        canvas.style.pointerEvents = 'auto';
+        scrim.style.display = 'none';
+        indicator.classList.remove('opacity-0');
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        // Lock interaction
+        toggleBtn.dataset.state = 'locked';
+        toggleBtn.textContent = 'Tap to Interact';
+        controls.enabled = false;
+        canvas.style.pointerEvents = 'none';
+        scrim.style.display = 'block';
+        indicator.classList.add('opacity-0');
+      }
+    });
+
+    // 5. Load Model
+    if (model) {
+      loader.load(model, (gltf) => {
+        const modelScene = gltf.scene;
+        const box = new THREE.Box3().setFromObject(modelScene);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        
+        modelScene.position.x += (modelScene.position.x - center.x);
+        modelScene.position.y += (modelScene.position.y - center.y);
+        modelScene.position.z += (modelScene.position.z - center.z);
+
+        const maxDim = Math.max(size.x, size.y, size.z);
+        camera.position.z = maxDim * 2.5; 
+
+        scene.add(modelScene);
+
+        canvas.classList.remove('opacity-0');
+        if (loaderOverlay) {
+          loaderOverlay.style.opacity = '0';
+          setTimeout(() => loaderOverlay.remove(), 500);
+        }
+      });
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update(); 
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    const resizeObserver = new ResizeObserver(() => {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      if (w === 0 || h === 0) return;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    });
+
+    resizeObserver.observe(container);
+    canvas.dataset.initialized = 'true';
+  }
+
+  function setupAll() {
+    document.querySelectorAll('.model-3d-section').forEach((el) => initScene(el as HTMLElement));
+  }
+
+  setupAll();
+  document.addEventListener('astro:after-swap', setupAll);
+</script>

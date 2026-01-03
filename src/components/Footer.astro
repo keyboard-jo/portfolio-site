@@ -1,0 +1,101 @@
+---
+// Footer.astro
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="col-span-12 mt-64 border-t border-black px-6 py-12 bg-white">
+  <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-y-12 gap-x-8">
+    
+    <div class="flex flex-col gap-4">
+      <span class="font-mono text-[10px] uppercase tracking-widest text-black/40">Navigation</span>
+      <nav class="flex flex-col gap-2 font-mono text-[11px] uppercase tracking-wider">
+        <a href="/" class="hover:text-black/50 transition-colors italic">Index</a>
+        <a href="/about" class="hover:text-black/50 transition-colors">About</a>
+      </nav>
+    </div>
+
+    <div class="flex flex-col gap-4">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-black/40">Social</span>
+        <nav class="flex flex-col gap-2 font-mono text-[11px] uppercase tracking-wider">
+            <a href="https://x.com/happy_media_st" target="_blank" class="hover:text-black/50 transition-colors">
+            X / Twitter
+            </a>
+
+            <button 
+            x-data="{ 
+                email: 'happymedia.strategy@gmail.com', 
+                copied: false,
+                copyEmail() {
+                navigator.clipboard.writeText(this.email);
+                this.copied = true;
+                setTimeout(() => this.copied = false, 2000);
+                }
+            }"
+            @click="copyEmail"
+            class="flex items-center gap-2 text-left hover:text-black/50 transition-colors group"
+            :class="copied ? 'text-green-600' : 'text-black'"
+            >
+            <span x-text="copied ? 'Copied to Clipboard' : 'Email / Copy'" class="uppercase"></span>
+            
+            <span 
+                class="w-1 h-1 rounded-full transition-all duration-300"
+                :class="copied ? 'bg-green-500 scale-125' : 'bg-black/20 group-hover:bg-black'"
+            ></span>
+            </button>
+        </nav>
+    </div>
+
+    <div class="flex flex-col gap-4" 
+      x-data="{ 
+        time: '',
+        tick: true,
+        timer: null,
+        updateTime() {
+            const now = new Date();
+            this.time = now.toLocaleTimeString('en-GB', { 
+                hour12: false, 
+                timeZone: 'Asia/Jakarta' 
+            });
+            this.tick = !this.tick; 
+        },
+        start() {
+            this.updateTime();
+            if (!this.timer) {
+                this.timer = setInterval(() => this.updateTime(), 1000);
+            }
+        },
+        stop() {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+     }" 
+     x-init="
+        const observer = new IntersectionObserver((entries) => {
+            entries[0].isIntersecting ? start() : stop();
+        }, { threshold: 0.1 });
+        observer.observe($el);
+     ">
+    
+    <span class="font-mono text-[10px] uppercase tracking-widest text-black/40">
+        Location_Status
+    </span>
+    
+      <div class="font-mono text-[11px] uppercase tracking-wider text-black">
+          <p>Tangerang Selatan, ID</p>
+          <p class="text-black/40 font-tabular-nums">
+              <span x-text="time">00:00:00</span>
+              <span :class="tick ? 'opacity-100' : 'opacity-20'" class="transition-opacity duration-300">WIB</span>
+          </p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 md:items-end md:text-right">
+      <span class="font-mono text-[10px] uppercase tracking-widest text-black/40">Version</span>
+      <div class="font-mono text-[11px] uppercase tracking-wider text-black">
+        <p>© {currentYear}</p>
+        <p class="text-black/40">Built with Astro</p>
+      </div>
+    </div>
+
+  </div>
+</footer>

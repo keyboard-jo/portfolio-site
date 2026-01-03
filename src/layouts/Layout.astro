@@ -1,4 +1,5 @@
 ---
+import '../styles/global.css';
 import SwissGrid from '../components/SwissGrid.astro';
 const { title = "Happy Media Strategy" } = Astro.props;
 ---
@@ -9,29 +10,6 @@ const { title = "Happy Media Strategy" } = Astro.props;
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<title>{title}</title>
-		<style is:global>
-			@tailwind base;
-			@tailwind components;
-			@tailwind utilities;
-
-			@layer base {
-				body {
-					@apply bg-transparent text-brand-black font-sans antialiased;
-				}
-
-				html {
-					@apply bg-brand-white;
-				}
-
-				h1, h2, h3 {
-					@apply font-black uppercase tracking-tightest leading-none;
-				}
-
-				.mono {
-					@apply font-mono text-[10px] uppercase tracking-widest;
-				}
-			}
-		</style>
 	</head>
 	<body>
 		<slot />
@@ -47,3 +25,11 @@ const { title = "Happy Media Strategy" } = Astro.props;
 		height: 100%;
 	}
 </style>
+<script>
+  // Find all links inside the content area that start with http (external)
+  const links = document.querySelectorAll('.flex.flex-col.gap-6 a[href^="http"]');
+  links.forEach(link => {
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
+  });
+</script>

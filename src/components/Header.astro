@@ -1,15 +1,60 @@
 ---
-// You can pass props here, like a custom title or version number
-const { version = "Ver. 2025.A" } = Astro.props;
+// Header.astro
+const { version = "v1.0.0" } = Astro.props;
+const { pathname } = Astro.url;
+
+// Helper to check if the path is active
+const isActive = (path: string) => {
+  if (path === '/' && pathname === '/') return true;
+  if (path !== '/' && pathname.startsWith(path)) return true;
+  return false;
+};
+
+const navItems = [
+  { name: 'Index', href: '/' },
+  { name: 'About', href: '/about' },
+];
 ---
 
-<header class="col-span-12 border-t-2 border-brand-black py-4 flex justify-between items-start mb-24">
-    <div class="flex flex-col font-black text-xl leading-extra-tight tracking-tightest">
-        <span>HAPPY</span>
-        <span>MEDIA</span>
-        <span>STRATEGY</span>
+<header class="col-span-12 border-t-2 border-brand-black py-4 flex justify-between items-start">
+  <a href="/" class="flex flex-col font-black text-xl leading-extra-tight tracking-tightest hover:opacity-70 transition-opacity">
+    <span>HAPPY</span>
+    <span>MEDIA</span>
+    <span>STRATEGY</span>
+  </a>
+
+  <div class="flex flex-col items-end gap-2 font-mono text-[10px] uppercase">
+    <div class="opacity-40 flex gap-2">
+      <span class="animate-pulse text-green-600">●</span>
+      {version} // {pathname === '/' ? 'HOME' : pathname.toUpperCase().replace('/', '')}
     </div>
-    <div class="font-mono text-[10px] uppercase opacity-60">
-        {version} //
-    </div>
+
+    <nav class="flex gap-4">
+      {navItems.map((item) => (
+        <a 
+          href={item.href}
+          class:list={[
+            "transition-all duration-300 relative",
+            isActive(item.href) 
+              ? "text-black opacity-100" 
+              : "opacity-40 hover:opacity-100"
+          ]}
+        >
+          {/* Swiss Active Indicator: A small dot or dash prefix */}
+          {isActive(item.href) && <span class="absolute -left-3 text-brand-black">•</span>}
+          {item.name}
+        </a>
+      ))}
+      
+      <span class="opacity-10">|</span>
+      
+      <a 
+        href="https://x.com/happy_media_st" 
+        target="_blank" 
+        class="opacity-40 hover:opacity-100 transition-opacity"
+      >
+        X_TW
+      </a>
+    </nav>
+  </div>
 </header>

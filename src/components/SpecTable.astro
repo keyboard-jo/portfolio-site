@@ -1,0 +1,32 @@
+---
+interface Props {
+  title?: string;
+  data: {
+    label: string;
+    value: string;
+  }[];
+}
+
+const { title, data } = Astro.props;
+---
+
+<div class="my-12 border-t border-black pt-2">
+  {title && (
+    <h4 class="font-mono text-[10px] uppercase tracking-widest mb-6 text-brand-black/50">
+      {title} // Data_Sheet
+    </h4>
+  )}
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2">
+    {data.map((item) => (
+      <div class="grid grid-cols-2 border-b border-black/10 py-2 items-baseline">
+        <span class="font-mono text-[10px] uppercase text-brand-black/40">
+          {item.label}
+        </span>
+        <span class="font-mono text-[11px] text-right text-brand-black uppercase">
+          {item.value}
+        </span>
+      </div>
+    ))}
+  </div>
+</div>

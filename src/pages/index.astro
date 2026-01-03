@@ -1,50 +1,55 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import PostEntry from '../components/PostEntry.astro';
+import { getCollection } from 'astro:content';
 
-const posts = [
-  {
-	id: "A001",
-    title: "The Latent Space of Design",
-    snippet: "Exploring how generative models are rewriting the rules of the International Typographic Style.",
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800",
-    url: "/posts/latent-design",
-    date: "2025-05-12" // New property
-  },
-  {
-	id: "A002",
-    title: "Automated Aesthetics",
-    snippet: "Why the grid is the perfect data structure for AI-mediated layout engines.",
-    image: "https://images.unsplash.com/photo-1633167606207-d840b5070fc2?q=80&w=800",
-    url: "/posts/automated-aesthetics",
-    date: "2025-06-20"
-  }
-];
+const allPosts = await getCollection('posts');
 
-const sortedPosts = posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-const firstId = sortedPosts[sortedPosts.length - 1].id; // The earliest post ID
-const lastId = sortedPosts[0].id;                      // The latest post ID
+// Sort them by date or ID
+const sortedPosts = allPosts.sort((a, b) => 
+    b.data.id.localeCompare(a.data.id)
+);
+const firstId = sortedPosts[sortedPosts.length - 1].data.id; // The earliest post ID
+const lastId = sortedPosts[0].data.id;                      // The latest post ID
 ---
 
 <Layout>
 	<div id="canvas-container"></div>
 	<main class="relative z-10 grid grid-cols-12 gap-6 px-6 py-12 min-h-screen bg-transparent text-brand-black font-sans">
-		<Header version="Ver. 2025.A"/>
-		<ProjectCard/>
+
+		<div class="col-span-12 min-h-screen flex flex-col">				
+			<Header/>
+
+			<div class="flex-grow flex items-center w-full">
+				<div class="w-full">
+					<ProjectCard />
+				</div>
+			</div>
+		</div>
 		
 		<div class="col-span-12 border-t-2 border-brand-black mt-24 mb-8 pt-2">
 			<span class="font-mono text-[10px] uppercase tracking-widest">
-				Selected Feed // {firstId}—{lastId}
+				Selected Feed // {firstId === lastId ? firstId : `${firstId}—${lastId}`}
 			</span>
 		</div>
 
 		<section class="col-span-12">
 			{sortedPosts.map(post => (
-				<PostEntry {...post} />
+				<PostEntry 
+					id={post.data.id}
+					title={post.data.title}
+					subtitle={post.data.subtitle}
+					coverImage={post.data.coverImage}
+					date={post.data.date} 
+					url={`/posts/${post.data.permalink}`} 
+				/>
 			))}
 		</section>
+		<Footer/>
+
 	</main>
 	<style>
 		#canvas-container {

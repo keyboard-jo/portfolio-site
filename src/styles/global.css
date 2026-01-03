@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-transparent text-brand-black font-sans antialiased;
+  }
+
+  html {
+    @apply bg-brand-white;
+  }
+
+  h1, h2, h3 {
+    @apply font-black uppercase tracking-tightest leading-none;
+  }
+
+  .mono {
+    @apply font-mono text-[10px] uppercase tracking-widest;
+  }
+}
+
+/* Target the scrollbar container */
+::-webkit-scrollbar {
+  width: 4px; /* Very thin for a minimalist look */
+  height: 4px;
+}
+
+/* Target the draggable handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1); /* Subtle grey */
+  border-radius: 0px; /* Square edges fit the Swiss/Grid look better */
+}
+
+/* Target the handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 1); /* Goes solid black on interaction */
+}
+
+/* Target the track (the area the handle slides in) */
+::-webkit-scrollbar-track {
+  background: transparent;
+}

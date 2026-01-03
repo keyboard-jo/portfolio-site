@@ -1,0 +1,108 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+
+interface Props {
+  status: 'OPEN' | 'CLOSE';
+}
+
+const { status = 'CLOSE' } = Astro.props;
+
+const isFieldOpen = status === 'OPEN';
+const colorClass = isFieldOpen ? 'bg-green-500' : 'bg-red-500';
+const pingClass = isFieldOpen ? 'bg-green-400' : 'bg-red-400';
+const textClass = isFieldOpen ? 'text-green-700' : 'text-red-700';
+---
+
+<Layout title="About / Happy Media Strategy">
+  <main class="relative z-10 grid grid-cols-12 gap-6 px-6 py-12 bg-transparent text-brand-black font-sans">
+    
+    <Header/>
+    <section class="col-span-12 md:col-span-9 mb-32">
+      
+      <h1 class="text-4xl md:text-6xl font-black leading-extra-tight tracking-tightest uppercase mb-10">
+        I am a <span class="text-black/30">Computer Science graduate</span> doing design using generative AI & traditional workflow.
+      </h1>
+      
+      <div class="max-w-xl">
+        <p class="font-mono text-xs uppercase leading-relaxed text-black/70 mb-4">
+          [ Happy Media Strategy ] is a personal space for visual experimentation. 
+        </p>
+        <p class="text-sm leading-relaxed text-black/90">
+          I don't have a graphic design degree. I have a degree in Computer Science. I like minimal and grid-based designs because they feel clear, structured, and focused on what really matters. I enjoy experimenting with generative AI to see what new models can do and how they can help turn ideas into reality faster. I don't limit myself to one style, and I'm always open to exploring other aesthetics. 
+        </p>
+      </div>
+    </section>
+
+    <section class="col-span-12 grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-black pt-8 mb-40">
+        <div>
+            <h2 class="font-mono text-[10px] uppercase tracking-widest text-black/40 mb-8 italic">// The_Approach</h2>
+            <div class="space-y-8">
+                <div>
+                    <h4 class="font-mono text-[11px] font-bold uppercase mb-2">Structure First</h4>
+                    <p class="text-sm text-black/70 leading-relaxed">I start with a minimal, grid-based system. The layout comes first, and the visuals follow. When the structure is solid, the design feels clear and intentional without relying on decoration.</p>
+                </div>
+                <div>
+                    <h4 class="font-mono text-[11px] font-bold uppercase mb-2">Hybrid Workflow</h4>
+                    <p class="text-sm text-black/70 leading-relaxed">My process is a hybrid by default. Traditional tools handle structure, layout, and lighting, while generative AI is part of the pipeline for exploration, effects, and iteration.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-neutral-50 p-8 border border-black/5 flex flex-col justify-between">
+            <h2 class="font-mono text-[10px] uppercase tracking-widest text-black/40 mb-8 italic">// The_Goal</h2>
+            <p class="text-sm leading-relaxed mb-6">
+                This portfolio showcases my work and is open to commission or project inquiries. If you value technical efficiency, clean aesthetics, and are curious about generative AI use cases, feel free to reach out.
+            </p>
+            <div 
+                x-data={`{ currentStatus: '${status}' }`}
+                class="font-mono text-[10px] uppercase flex items-center gap-2"
+                >
+                <span class="relative flex h-2 w-2">
+                    <span class={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${pingClass}`}></span>
+                    
+                    <span class={`relative inline-flex rounded-full h-2 w-2 ${colorClass}`}></span>
+                </span>
+
+                <span class={`font-bold tracking-widest ${textClass}`}>
+                    Status: <span x-text="currentStatus"></span>_FOR_COMMISSION
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <section class="col-span-12 border-t border-black pt-8 mb-20">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-y-12 gap-x-4">
+        
+        <div class="flex flex-col gap-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-black/40">3D_&_Visual</span>
+            <ul class="font-mono text-[11px] uppercase space-y-2">
+                <li>Blender (3D Modeling)</li>
+                <li>DaVinci Resolve (Video)</li>
+                <li>Affinity Designer (Graphics)</li>
+            </ul>
+            </div>
+
+            <div class="flex flex-col gap-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-black/40">Generative_AI</span>
+            <ul class="font-mono text-[11px] uppercase space-y-2">
+                <li>Custom Python Tooling</li>
+                <li>In-House AI Pipelines</li>
+            </ul>
+            </div>
+
+            <div class="flex flex-col gap-4">
+            <span class="font-mono text-[10px] uppercase tracking-widest text-black/40">Software_&_ML_DL</span>
+            <ul class="font-mono text-[11px] uppercase space-y-2">
+                <li>Software Development</li>
+                <li>Machine Learning/Deep Learning</li>
+            </ul>
+        </div>
+
+      </div>
+    </section>
+    <Footer/>
+  </main>
+</BaseLayout>

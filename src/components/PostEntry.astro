@@ -1,11 +1,18 @@
 ---
-// src/components/PostEntry.astro
-const { id, title, snippet, image, url, date } = Astro.props;
+import Image from "astro/components/Image.astro";
 
-const formattedDate = new Date(date).toLocaleDateString('en-US', {
-  month: 'short',
-  year: 'numeric',
-}).toUpperCase();
+interface Props {
+  id: string;
+  title: string;
+  subtitle: string;
+  coverImage: any; // Or 'ImageMetadata' if you want to be super specific
+  date: Date;      // This is now a proper JS Date object
+  url: string;
+}
+
+const { id, title, subtitle, coverImage, url, date } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('sv-SE');
 ---
 
 <a href={url} class="grid grid-cols-12 gap-4 group cursor-pointer border-t border-brand-black py-8 last:border-b items-start">
@@ -20,13 +27,19 @@ const formattedDate = new Date(date).toLocaleDateString('en-US', {
             {title}
         </h2>
         <p class="text-sm font-bold uppercase leading-tight opacity-70 max-w-xl">
-            {snippet}
+            {subtitle}
         </p>
     </div>
 
     <div class="hidden md:block md:col-span-3">
         <div class="overflow-hidden aspect-[4/3] border border-brand-black/5">
-            <img src={image} alt={title} class="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-700" />
+            <Image 
+                src={coverImage} 
+                alt={title} 
+                width={600} 
+                height={450}
+                class="w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 transition-all duration-700" 
+            />
         </div>
     </div>
 </a>

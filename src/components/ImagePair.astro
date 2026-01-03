@@ -1,0 +1,57 @@
+---
+import ZoomImage from './ZoomImage.astro';
+
+interface Props {
+  imgOne: ImageMetadata;
+  imgTwo: ImageMetadata;
+  labelOne?: string;
+  labelTwo?: string;
+  caption?: string;
+  width?: number; // Optional: width for each individual image
+}
+
+const { imgOne, imgTwo, labelOne, labelTwo, caption, width } = Astro.props;
+---
+
+<figure class="my-12 pswp-gallery">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    <div class="flex flex-col">
+      <div 
+        aria-hidden="true"
+        class="border-t border-black pt-1 mb-2 text-[9px] uppercase tracking-widest text-brand-black/50 font-mono"
+      >
+        {labelOne || "Source_01"}
+      </div>
+      <ZoomImage 
+        src={imgOne} 
+        alt={labelOne || "Image one"} 
+        width={width}
+        imageClass="border border-black/5"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <div 
+        aria-hidden="true"
+        class="border-t border-black pt-1 mb-2 text-[9px] uppercase tracking-widest text-brand-black/50 font-mono"
+      >
+        {labelTwo || "Source_02"}
+      </div>
+      <ZoomImage 
+        src={imgTwo} 
+        alt={labelTwo || "Image two"} 
+        width={width}
+        imageClass="border border-black/5"
+      />
+    </div>
+
+  </div>
+
+  {caption && (
+    <figcaption class="font-mono text-[10px] mt-4 text-brand-black/60 uppercase leading-relaxed max-w-2xl">
+      <span class="sr-only">Description: </span>
+      {caption}
+    </figcaption>
+  )}
+</figure>

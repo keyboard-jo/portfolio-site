@@ -1,0 +1,113 @@
+---
+id: "A002"
+permalink: "ai-character-001"
+title: "AI Character 001"
+subtitle: "Full documentation of my first AI character 001 and how to generate realistic facial feature."
+coverImage: "./001_ai_character_cover_image.png"
+date: 2026-01-02
+tags: ["AI", "Nano Banana", "Character Creation"]
+---
+import ImagePrompt from '../../../components/ImagePrompt.astro';
+import LessonLearned from '../../../components/LessonLearned.astro';
+import ImagePair from '../../../components/ImagePair.astro';
+import Table from '../../../components/Table.astro';
+import Credits from '../../../components/Credits.astro';
+import imageCU_NB from './NB_image.png'
+import imageCU_NBP from './001_ai_character_cover_image.png'
+import imageFB_NBP from "./NBP_FB_image.png"
+
+export const facialData = [
+  {
+    "Detail": "Hair",
+    "Keywords": "Individual strands, baby hairs, coily/curly texture, stray strands",
+    "Explanation": "Defining texture and explicitly adding micro-details like stray strands adds a significant level of realism."
+  },
+  {
+    "Detail": "Skin",
+    "Keywords": "Visible pores, subsurface scattering, peach fuzz, T-zone",
+    "Explanation": "Simulates light diffusion within skin layers and adds micro-imperfections for a non-synthetic look."
+  },
+  {
+    "Detail": "Lips",
+    "Keywords": "Glossy, saturated, highlight",
+    "Explanation": "Matte lips often look artificial; glossiness helps convey realistic light interaction and moisture."
+  }
+];
+
+export const projectCredits = [
+  { role: "Nano Banana Character Consistency", name: "Lenny Blonde", link: "https://www.youtube.com/watch?v=aiKGYFx3VPg" },
+  { role: "Skin Subsurface Scattering Prompt", name: "luneva", link: "https://civitai.com/articles/22242/qwen-skin-prompt-test-subsurface-scattering" },
+  { role: "AI Image Generation", name: "Nano Banana Pro, Seedream 4.0" }
+];
+
+## 00 // Concept
+The idea behind this project is to create an AI-generated character that looks genuinely realistic in terms of facial features. I've generally been able to tell whether an image of a person was AI-generated or real—there are subtle cues that often give it away. The most obvious one is the plasticky, artificial-looking skin.
+
+That said, I've recently seen some Nano Banana Pro-generated images that are genuinely difficult to distinguish from real photographs. This led me to test the limits of how realistic an AI-generated person can actually be.
+
+## 01 // Nano Banana vs Nano Banana Pro
+I started with Nano Banana to better understand its limitations. My initial generations were “okay” in terms of realism. The skin often felt plastic-like, pores were too uniform, background hair looked overly sleek, lips were too perfect, and ear details were lacking. However, at first glance, the images were convincing enough.
+
+<ImagePrompt
+    img={imageCU_NB}
+    label="nb_cu_image"
+    prompt="A clean close-up portrait of a young woman of Chinese descent, shot at eye level and straight-on. She has black straight sleek medium-length hair with a center part, framing lines softened by a few loose hair strands across the forehead or cheek. She faces the camera with a soft neutral expression, a gently focused gaze, and relaxed eyebrows with slight natural asymmetry. Her warm dark brown eyes are highly detailed, featuring visible iris fiber texture, natural catchlights, a glossy lower waterline, subtle sclera veins, soft eyelash shadows, and faint tear-duct moisture. Her skin displays hyper-realistic texture including fine facial pores, subtle vellus hair, tiny skin bumps, and slight natural skin unevenness. There is very subtle under-eye shadow, natural under-eye texture, faint redness around the tear ducts, and tiny natural imperfections in skin tone, with an optional single small beauty mark. Her lips are naturally closed with subtle softness, displaying detailed lip texture, micro-creases, and soft grain. Soft front studio lighting creates a subtle blush, slight T-zone shine, and tiny specular highlights across naturally hydrated skin. Enhanced subsurface scattering on cheeks and nose allows for realistic light diffusion, soft directional shadows, and natural highlight falloff. Photographed with an 85mm f/1.8 portrait lens on a full-frame DSLR for natural compression, minimal distortion, shallow depth of field, and soft bokeh. Captured in a clean professional photo studio with a light gray seamless background and soft gradient. The image features DSLR realism, natural photographic grain, crisp focus on facial planes, and clean color grading. 1:1 aspect ratio."
+    model="Nano Banana"
+    caption="FIG 02 // The closeup image of the AI Character using Nano Banana"
+/>
+
+When experimenting with different shot types—such as 3/4 shots and full-body shots—the quality and level of detail dropped noticeably. As the framing widened, the face began to look less consistent with the close-up version. Hair became more homogeneous, with less frizz and fewer visible strands. This is understandable, as the resolution is limited to around 1K, meaning facial details become less visible as the subject occupies less of the frame.
+
+Switching to Nano Banana Pro was an incredible upgrade. Previously, I had considered using tools like Topaz or Enhancor—especially Enhancor for skin upscaling—but the level of detail generated by Nano Banana Pro made those tools unnecessary, in my opinion.
+
+<ImagePrompt
+    img={imageCU_NBP}
+    label="nbp_cu_image"
+    prompt="Create a 4K, 1:1 close-up portrait of the same subject shown in the reference image. Maintain all core facial features and proportions. Improve realism with detailed skin texture, visible pores, fine vellus hairs, natural subsurface scattering, and a soft dewy finish without excess shine. Preserve freckles while adding subtle natural blemishes around the nose, chin, and jawline to enhance authenticity. Ensure the teeth appear naturally off-white with a slightly brighter, healthier tone while keeping a realistic shade dnot overly white. The lips should have a soft glossy sheen. The hair should include individual strands, baby hairs around the hairline, and a natural smooth short-bob flow with gentle shine. Pose: The head is turned approximately 45 to the left, but the eyes look directly into the camera with a calm, neutral expression. The mouth is gently parted, showing a natural hint of the upper front teeth. Frame the portrait from the top of the head to the collarbone. Lighting: Use Neutral Loop Lighting with a Neutral-Key soft studio style. Position the key light slightly above eye level and about 30 from the subject front-left side (the direction of her head turn). Use a subtle fill on the opposite side to keep shadows soft and natural. Background is a softly blurred light-blue studio backdrop. Capture with the clarity and color accuracy of a high-resolution mirrorless camera."
+    model="Nano Banana"
+    caption="FIG 03 // The closeup image of the AI Character using Nano Banana Pro from a checkpoint"
+/>
+
+With the right keywords, the facial details became realistic and nearly indistinguishable from real photography. Hair looked far more believable, skin pores were less uniform, ears had more structural detail, lips appeared glossy and natural, blush looked authentic, and the skin had a subtle dewiness. Small details such as peach fuzz and baby hairs also became visible. Of course, this is helped by the fact that Nano Banana Pro can generate 4K images, but even the 1K and 2K outputs are noticeably more detailed.
+
+Beyond facial features, lighting is what truly differentiates the two. In Nano Banana Pro, highlights and shadows behave more realistically, especially in how they interact with skin pores. There's a natural oiliness to the skin that feels photographic rather than synthetic. Again, higher resolution plays a big role in enabling these micro-details.
+
+## 02 // Realistic Facial Features
+
+From my experience, the key to realistic facial features is imperfection. The areas I focus on most for achieving realism are hair, skin texture, and lips. Other features—such as the nose, eyes, eyebrows, and teeth—are generally generated quite convincingly by both Nano Banana and Nano Banana Pro without much intervention.
+
+<Table 
+  headers={["Detail", "Keywords", "Explanation"]} 
+  rows={facialData} 
+/>
+
+## 03 // Full Reference Shot
+
+For reference images, I decided to use both a close-up shot and a full-body shot, following the approach outlined in this [video][reference-shot-video]. The idea is to capture detailed facial features from the close-up while preserving accurate body proportions from the full-body image.
+
+<ImagePair 
+  imgOne={imageCU_NBP} 
+  imgTwo={imageFB_NBP} 
+  labelOne="close_up" 
+  labelTwo="full_body"
+  caption="FIG 04. // Close up and full body shot comparison"
+/>
+
+For the full-body shot, I dressed the character in a neutral outfit: a white shirt, black trousers, and high heels. Having additional angles—such as side or back views—would be beneficial for dynamic scenes, but they weren't necessary for this particular spec project.
+
+## 04 // Retrospective & Lessons Learned
+<LessonLearned number="01" title="Loss of Detail in Wider Shots">
+As the framing moves from close-up to full-body, fine details are inevitably lost. Micro-details such as peach fuzz, acne, freckles, and beauty marks become less visible or disappear entirely. Facial structure can also shift slightly. Because of this, it's crucial to first generate a fully detailed 4K close-up reference. Pairing this with additional shots—like 3/4 or full-body views—helps maintain facial consistency and proportions.
+</LessonLearned>
+
+<LessonLearned number="02" title="Checkpoints matter">
+Never discard previous generations too quickly. Even if an image has some misalignment issues, it may contain facial features or structural elements worth preserving. Use these successful generations as references to refine and improve future outputs.
+</LessonLearned>
+
+<LessonLearned number="03" title="Nano Banana Pro prompting">
+Prompting is especially important when using Nano Banana or Nano Banana Pro. Reading the official Google documentation is highly recommended, as Gemini 3.0 Pro has very strong embeddings and an excellent understanding of language. If you're coming from tools like ComfyUI, prompt quality becomes even more critical, since Nano Banana does not offer ControlNet, IP-Adapter, or similar guidance tools.
+</LessonLearned>
+
+## 05 // References
+<Credits credits={projectCredits} />
+[reference-shot-video]: https://www.youtube.com/watch?v=aiKGYFx3VPg

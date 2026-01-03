@@ -1,0 +1,37 @@
+---
+interface Props {
+  headers: string[];
+  rows: { [key: string]: string }[];
+}
+
+const { headers, rows } = Astro.props;
+---
+
+<div class="my-12 border-t border-black">
+  <table class="w-full text-left border-collapse">
+    <thead>
+      <tr class="border-b border-black/10">
+        {headers.map(header => (
+          <th class="py-4 font-mono text-[10px] uppercase tracking-widest text-black/40 font-normal">
+            {header}
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-black/5">
+      {rows.map(row => (
+        <tr>
+          {headers.map(header => (
+            <td class="py-6 pr-4 align-top">
+              {header === headers[0] ? (
+                <span class="font-black uppercase text-sm tracking-tightest">{row[header]}</span>
+              ) : (
+                <span class="text-sm leading-relaxed text-black/80">{row[header]}</span>
+              )}
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
