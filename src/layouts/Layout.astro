@@ -1,20 +1,202 @@
 ---
 import '../styles/global.css';
 import SwissGrid from '../components/SwissGrid.astro';
-const { title = "Happy Media Strategy" } = Astro.props;
+import { ClientRouter } from 'astro:transitions';
+
+interface Props {
+    title?: string;
+    pageId?: string; 
+}
+const { title = "Happy Media Strategy", pageId = "default" } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>{title}</title>
-	</head>
-	<body>
-		<slot />
-		<SwissGrid />
-	</body>
+    <head>
+        <ClientRouter />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>{title}</title>
+    </head>
+    <body data-page-id={pageId}>
+        <slot />
+        <SwissGrid />
+
+        <script>
+            import * as THREE from 'three';
+            import { gsap } from 'gsap';
+            import { ScrollTrigger } from 'gsap/ScrollTrigger';
+            import Lenis from 'lenis';
+            import PhotoSwipeLightbox from 'photoswipe/lightbox';
+            import 'photoswipe/style.css';
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            // --- GLOBAL PERSISTENT INSTANCES ---
+            let lenis;
+            let renderer, scene, camera, sphere, animationId;
+            let lightbox;
+
+            // 1. Initialize Lenis ONCE (outside the main init to keep it persistent)
+            function setupLenis() {
+                if (lenis) lenis.destroy();
+                lenis = new Lenis({
+                duration: 1.2,
+                lerp: 0.08,
+                smoothWheel: true,
+                });
+
+                lenis.on('scroll', ScrollTrigger.update);
+                gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
+                });
+                gsap.ticker.lagSmoothing(0);
+            }
+
+            // 2. The Main Router / Init function
+            function init() {
+                console.log("🚀 Route Change: Initializing Engine");
+
+                const pageId = document.body.getAttribute('data-page-id');
+
+                console.log(`🚀 Current Page ID: ${pageId}`);
+
+                // --- A. CLEANUP ---
+                ScrollTrigger.getAll().forEach(t => t.kill());
+                if (animationId) cancelAnimationFrame(animationId);
+                if (lenis) lenis.scrollTo(0, { immediate: true });
+
+                // --- B. EXTERNAL LINKS HANDLER ---
+                document.querySelectorAll('a[href^="http"]').forEach(link => {
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+                });
+
+                // --- C. PAGE ROUTING ---
+                switch (pageId) {
+                case 'index':
+                    runIndexAnimations();
+                    initThreeJS();
+                    break;
+                case 'posts':
+                    runPostAnimations();
+                    break;
+                case 'about':
+                    runAboutAnimations();
+                    break;
+                }
+
+                // Always reveal header if hidden
+                gsap.to(".site-header", { autoAlpha: 1, duration: 1 });
+                
+                ScrollTrigger.refresh();
+            }
+
+            // --- PAGE: INDEX LOGIC ---
+            function runIndexAnimations() {
+                const heroTl = gsap.timeline({ defaults: { ease: "expo.out" } });
+                heroTl.set(".hero-section .reveal-text, .hero-section .list-item", { y: "105%", autoAlpha: 1 });
+                heroTl.to(".hero-section .reveal-text", { y: "0%", duration: 1.2, stagger: 0.1 })
+                    .to(".hero-section .list-item", { y: "0%", duration: 1, stagger: 0.1 }, "-=0.8");
+
+                const feedDisplay = document.querySelector('.feed-id-display');
+                const finalValue = feedDisplay?.getAttribute('data-final-id');
+                if (feedDisplay) {
+                gsap.to({}, {
+                    scrollTrigger: { trigger: ".feed-container", start: "top 90%" },
+                    duration: 1.5,
+                    onUpdate: () => {
+                    const rand = () => Math.random().toString(36).substring(2, 5).toUpperCase();
+                    feedDisplay.textContent = `Selected Feed // ${rand()}—${rand()}`;
+                    },
+                    onComplete: () => { if (finalValue) feedDisplay.textContent = `Selected Feed // ${finalValue}`; }
+                });
+                }
+
+                document.querySelectorAll('.post-entry').forEach((entry) => {
+                const revealItems = entry.querySelectorAll('.reveal-item');
+                const entryImg = entry.querySelector('.reveal-img');
+                const entryTl = gsap.timeline({ scrollTrigger: { trigger: entry, start: "top 90%" } });
+                entryTl.set(revealItems, { y: "110%", autoAlpha: 0 })
+                        .to(revealItems, { autoAlpha: 1, y: "0%", duration: 0.8, stagger: 0.05 });
+                if (entryImg) {
+                    entryTl.fromTo(entryImg, { autoAlpha: 0, scale: 1.4 }, { autoAlpha: 1, scale: 1, duration: 1.6, clearProps: "transform" }, "-=0.8");
+                }
+                });
+            }
+
+            // --- PAGE: POST LOGIC ---
+            function runPostAnimations() {
+                const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+                tl.set(".page-reveal-item", { y: "110%", autoAlpha: 1 })
+                .to(".page-reveal-item", { y: "0%", duration: 1.2, stagger: 0.1 })
+                .fromTo(".page-hero-img", { autoAlpha: 0, scale: 1.4 }, { autoAlpha: 1, scale: 1, duration: 2, clearProps: "transform" }, "-=1");
+            }
+
+            // --- PAGE: ABOUT LOGIC ---
+            function runAboutAnimations() {
+                const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+                tl.set(".page-reveal-item", { y: "110%", autoAlpha: 1 })
+                .set(".reveal-item", { autoAlpha: 0, y: 20 })
+                .set(".about-border", { scaleX: 0, transformOrigin: "left" })
+                .to(".page-reveal-item", { y: "0%", duration: 1.5, stagger: 0.1 })
+                .to(".reveal-item", { autoAlpha: 1, y: 0, duration: 1, stagger: 0.1 }, "-=1")
+                .to(".about-border", { scaleX: 1, duration: 1.5, ease: "expo.inOut" }, "-=1.2");
+            }
+
+            // --- THREE.JS ENGINE ---
+            function initThreeJS() {
+                const container = document.getElementById('canvas-container');
+                if (!container) return;
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                container.appendChild(renderer.domElement);
+                const geometry = new THREE.IcosahedronGeometry(2, 2);
+                const material = new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true, transparent: true, opacity: 0.1 });
+                sphere = new THREE.Mesh(geometry, material);
+                scene.add(sphere);
+                camera.position.z = 5;
+                function animate() {
+                animationId = requestAnimationFrame(animate);
+                sphere.rotation.y += 0.003;
+                sphere.rotation.x += 0.001;
+                renderer.render(scene, camera);
+                }
+                animate();
+            }
+
+            // --- PHOTOSWIPE LOGIC ---
+            function initPhotoSwipe() {
+                if (lightbox) lightbox.destroy();
+                lightbox = new PhotoSwipeLightbox({
+                gallery: '.pswp-gallery',
+                children: 'a',
+                pswpModule: () => import('photoswipe')
+                });
+                lightbox.init();
+            }
+
+            // --- LIFECYCLE LISTENERS ---
+            
+            // Initial setup for Lenis
+            setupLenis();
+
+            // Handle first load and page swaps
+            document.addEventListener('astro:page-load', init);
+
+            // Resize handler
+            window.addEventListener('resize', () => {
+                const container = document.getElementById('canvas-container');
+                if (renderer && camera && container) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                }
+            });
+            </script>
+    </body>
 </html>
 
 <style>
@@ -25,11 +207,19 @@ const { title = "Happy Media Strategy" } = Astro.props;
 		height: 100%;
 	}
 </style>
-<script>
-  // Find all links inside the content area that start with http (external)
-  const links = document.querySelectorAll('.flex.flex-col.gap-6 a[href^="http"]');
-  links.forEach(link => {
-    link.setAttribute('target', '_blank');
-    link.setAttribute('rel', 'noopener noreferrer');
-  });
-</script>
+<noscript>
+    <style>
+        .site-header,
+        .reveal-text, 
+        .list-item, 
+        .reveal-item, 
+        .page-reveal-item,
+        .reveal-img, 
+        .page-hero-img,
+        {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: none !important;
+        }
+    </style>
+</noscript>

@@ -14,31 +14,41 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await entry.render(); // This converts MD to HTML
-const { id, title, coverImage, date, subtitle, zoom } = entry.data;
+const { id, title, coverImage, date, subtitle } = entry.data;
 const formattedDate = date.toLocaleDateString('sv-SE');
 ---
 
-<Layout title={entry.data.title}>
+<Layout title={entry.data.title} pageId='posts'>
     <main class="relative z-10 grid grid-cols-12 gap-6 px-6 py-12 bg-transparent text-brand-black font-sans">
-        <Header/>
+        <div class="col-span-12">
+            <Header/>
+        </div>
 
         <header class="col-span-12 md:col-span-8">
-            <div class="font-mono text-[10px] text-brand-red mb-4">{id} // {formattedDate}</div>
-            <h1 class="text-6xl md:text-8xl font-black uppercase leading-[0.85] tracking-tightest mb-8">
-                {title}
-            </h1>
-            <p class="text-xl font-bold uppercase opacity-70 max-w-2xl">
-                {subtitle}
-            </p>
+            <div class="overflow-hidden mb-4">
+                <div class="page-reveal-item font-mono text-[10px] text-brand-red">{id} // {formattedDate}</div>
+            </div>
+            
+            <div class="overflow-hidden mb-8">
+                <h1 class="page-reveal-item text-6xl md:text-8xl font-black uppercase leading-[0.85] tracking-tightest">
+                    {title}
+                </h1>
+            </div>
+
+            <div class="overflow-hidden">
+                <p class="page-reveal-item text-xl font-bold uppercase opacity-70 max-w-2xl">
+                    {subtitle}
+                </p>
+            </div>
         </header>
 
-        <div class="col-span-12 mb-12">
-            <div class="pswp-gallery">
+        <div class="col-span-12 mb-12 page-hero-container">
+            <div class="pswp-gallery overflow-hidden">
                 <ZoomImage 
-                src={coverImage} 
-                alt={title}
-                loading="eager"
-                imageClass="h-[60vh] object-cover border-b-2 border-black grayscale contrast-125 hover:grayscale-0 transition-all duration-500"
+                    src={coverImage} 
+                    alt={title}
+                    loading="eager"
+                    imageClass="page-hero-img h-[60vh] object-cover border-b-2 border-black grayscale contrast-125 hover:grayscale-0 transition-[filter] duration-500"
                 />
             </div>
             <p class="font-mono text-[10px] mt-2 uppercase">Fig 01. // Hero Image</p>
@@ -75,16 +85,16 @@ const formattedDate = date.toLocaleDateString('sv-SE');
 
     </main>
 </Layout>
+<style>
+    .page-reveal-item {
+        display: inline-block;
+        width: 100%;
+        will-change: transform;
+    }
 
-<script>
-    import PhotoSwipeLightbox from 'photoswipe/lightbox';
-    import 'photoswipe/style.css';
-
-    const lightbox = new PhotoSwipeLightbox({
-        // Use a class so we can have multiple galleries/pairs on one page
-        gallery: '.pswp-gallery', 
-        children: 'a',
-        pswpModule: () => import('photoswipe')
-    });
-    lightbox.init();
-</script>
+    /* Prevent text jump while animating scale */
+    .page-hero-container .overflow-hidden {
+        position: relative;
+        z-index: 1;
+    }
+</style>

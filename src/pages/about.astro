@@ -16,61 +16,94 @@ const pingClass = isFieldOpen ? 'bg-green-400' : 'bg-red-400';
 const textClass = isFieldOpen ? 'text-green-700' : 'text-red-700';
 ---
 
-<Layout title="About / Happy Media Strategy">
+<Layout title="About / Happy Media Strategy" pageId='about'>
   <main class="relative z-10 grid grid-cols-12 gap-6 px-6 py-12 bg-transparent text-brand-black font-sans">
-    
-    <Header/>
+    <Header transition:persist/>
     <section class="col-span-12 md:col-span-9 mb-32">
-      
-      <h1 class="text-4xl md:text-6xl font-black leading-extra-tight tracking-tightest uppercase mb-10">
-        I am a <span class="text-black/30">Computer Science graduate</span> doing design using generative AI & traditional workflow.
-      </h1>
+      <div class="overflow-hidden">
+        <h1 class="page-reveal-item text-4xl md:text-6xl font-black leading-extra-tight tracking-tightest uppercase mb-10">
+          I am a <span class="text-black/30">Data Analytics graduate</span> doing design using generative AI & traditional workflow.
+        </h1>
+      </div>
       
       <div class="max-w-xl">
-        <p class="font-mono text-xs uppercase leading-relaxed text-black/70 mb-4">
-          [ Happy Media Strategy ] is a personal space for visual experimentation. 
-        </p>
-        <p class="text-sm leading-relaxed text-black/90">
-          I don't have a graphic design degree. I have a degree in Computer Science. I like minimal and grid-based designs because they feel clear, structured, and focused on what really matters. I enjoy experimenting with generative AI to see what new models can do and how they can help turn ideas into reality faster. I don't limit myself to one style, and I'm always open to exploring other aesthetics. 
+        <div class="overflow-hidden">
+          <p class="reveal-item font-mono text-xs uppercase leading-relaxed text-black/70 mb-4">
+            [ Happy Media Strategy ] is a personal space for visual experimentation. 
+          </p>
+        </div>
+        <p class="reveal-item text-sm leading-relaxed text-black/90">
+          I don't have a graphic design degree. I have a degree in Computer Science Data Analytics. I like minimal and grid-based designs because they feel clear, structured, and focused on what really matters. I enjoy experimenting with generative AI to see what new models can do and how they can help turn ideas into reality faster. I don't limit myself to one style, and I'm always open to exploring other aesthetics. 
         </p>
       </div>
     </section>
 
-    <section class="col-span-12 grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-black pt-8 mb-40">
-        <div>
-            <h2 class="font-mono text-[10px] uppercase tracking-widest text-black/40 mb-8 italic">// The_Approach</h2>
-            <div class="space-y-8">
-                <div>
-                    <h4 class="font-mono text-[11px] font-bold uppercase mb-2">Structure First</h4>
-                    <p class="text-sm text-black/70 leading-relaxed">I start with a minimal, grid-based system. The layout comes first, and the visuals follow. When the structure is solid, the design feels clear and intentional without relying on decoration.</p>
-                </div>
-                <div>
-                    <h4 class="font-mono text-[11px] font-bold uppercase mb-2">Hybrid Workflow</h4>
-                    <p class="text-sm text-black/70 leading-relaxed">My process is a hybrid by default. Traditional tools handle structure, layout, and lighting, while generative AI is part of the pipeline for exploration, effects, and iteration.</p>
-                </div>
-            </div>
+    <section class="about-border col-span-12 grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-black pt-8 mb-40">
+        <div class="reveal-item">
+          <h2 class="font-mono text-[10px] uppercase tracking-widest text-black/40 mb-8 italic">// The_Approach</h2>
+          <div class="space-y-8">
+              <div>
+                  <h4 class="font-mono text-[11px] font-bold uppercase mb-2">Structure First</h4>
+                  <p class="text-sm text-black/70 leading-relaxed">I start with a minimal, grid-based system. The layout comes first, and the visuals follow. When the structure is solid, the design feels clear and intentional without relying on decoration.</p>
+              </div>
+              <div>
+                  <h4 class="font-mono text-[11px] font-bold uppercase mb-2">Hybrid Workflow</h4>
+                  <p class="text-sm text-black/70 leading-relaxed">My process is a hybrid by default. Traditional tools handle structure, layout, and lighting, while generative AI is part of the pipeline for exploration, effects, and iteration.</p>
+              </div>
+          </div>
         </div>
 
-        <div class="bg-neutral-50 p-8 border border-black/5 flex flex-col justify-between">
-            <h2 class="font-mono text-[10px] uppercase tracking-widest text-black/40 mb-8 italic">// The_Goal</h2>
-            <p class="text-sm leading-relaxed mb-6">
-                This portfolio showcases my work and is open to commission or project inquiries. If you value technical efficiency, clean aesthetics, and are curious about generative AI use cases, feel free to reach out.
-            </p>
-            <div 
-                x-data={`{ currentStatus: '${status}' }`}
-                class="font-mono text-[10px] uppercase flex items-center gap-2"
-                >
-                <span class="relative flex h-2 w-2">
-                    <span class={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${pingClass}`}></span>
-                    
-                    <span class={`relative inline-flex rounded-full h-2 w-2 ${colorClass}`}></span>
-                </span>
+        <div class="reveal-item bg-neutral-50 p-8 border border-black/5 flex flex-col justify-between">
+          <div>
+              <h2 class="font-mono text-[10px] uppercase tracking-widest text-black/40 mb-8 italic">// The_Goal</h2>
+              <p class="text-sm leading-relaxed mb-6">
+                  This portfolio showcases my work and is open to commission or project inquiries. If you value technical efficiency, clean aesthetics, and are curious about generative AI use cases, feel free to reach out.
+              </p>
 
-                <span class={`font-bold tracking-widest ${textClass}`}>
-                    Status: <span x-text="currentStatus"></span>_FOR_COMMISSION
-                </span>
-            </div>
-        </div>
+              <div 
+                  x-data="{ 
+                      email: 'happymedia.strategy@email.com', 
+                      copied: false,
+                      copyEmail() {
+                          navigator.clipboard.writeText(this.email);
+                          this.copied = true;
+                          setTimeout(() => this.copied = false, 2000);
+                      }
+                  }"
+                  class="mb-8"
+              >
+                  <button 
+                      @click="copyEmail()"
+                      class="group flex items-center gap-3 font-mono text-[10px] uppercase tracking-tighter border border-black/10 px-4 py-2 hover:bg-black hover:text-white transition-all duration-300"
+                  >
+                      <span x-text="copied ? 'EMAIL_COPIED' : 'COPY_EMAIL_ADDRESS'"></span>
+                      <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          width="12" height="12" 
+                          viewBox="0 0 24 24" fill="none" 
+                          stroke="currentColor" stroke-width="2" 
+                          stroke-linecap="round" stroke-linejoin="round"
+                          class="opacity-50 group-hover:rotate-12 transition-transform"
+                      >
+                          <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                      </svg>
+                  </button>
+              </div>
+          </div>
+
+          <div 
+              x-data={`{ currentStatus: '${status}' }`}
+              class="font-mono text-[10px] uppercase flex items-center gap-2"
+          >
+              <span class="relative flex h-2 w-2">
+                  <span class={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${pingClass}`}></span>
+                  <span class={`relative inline-flex rounded-full h-2 w-2 ${colorClass}`}></span>
+              </span>
+              <span class={`font-bold tracking-widest ${textClass}`}>
+                  Status: <span x-text="currentStatus"></span>_FOR_COMMISSION
+              </span>
+          </div>
+      </div>
     </section>
 
     <section class="col-span-12 border-t border-black pt-8 mb-20">
@@ -105,4 +138,4 @@ const textClass = isFieldOpen ? 'text-green-700' : 'text-red-700';
     </section>
     <Footer/>
   </main>
-</BaseLayout>
+</Layout>

@@ -5,11 +5,12 @@ import { cn } from '../lib/utils';
 interface Props {
   src: ImageMetadata;
   alt: string;
-  width?: number;        // Display width on the page (default 1200)
-  quality?: number;      // Zoom quality (default 90)
-  class?: string;        // Classes for the <a> tag
-  imageClass?: string;   // Classes for the <Image /> tag
+  width?: number;
+  quality?: number;
+  class?: string;
+  imageClass?: string;
   loading?: "lazy" | "eager";
+  transitionName?: string;
 }
 
 const { 
@@ -19,10 +20,10 @@ const {
   quality = 90, 
   class: className, 
   imageClass, 
-  loading = "lazy" 
+  loading = "lazy",
+  transitionName
 } = Astro.props;
 
-// 1. We use the master dimensions directly from the source metadata
 const highRes = await getImage({ 
   src: src, 
   width: src.width, 
@@ -43,6 +44,7 @@ const decoding = loading === "eager" ? "sync" : "async";
   <Image 
     src={src}
     alt={alt} 
+    transition:name={transitionName}
     width={Math.min(width, src.width)}
     loading={loading}
     decoding={decoding}

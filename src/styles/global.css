@@ -41,3 +41,53 @@
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+
+
+.site-header, 
+.reveal-text, 
+.list-item, 
+.reveal-item, 
+.page-reveal-item {
+    /* Use visibility: hidden or opacity: 0 to prevent the flicker */
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Ensure the image doesn't pop in at full size either */
+.reveal-img, .page-hero-img {
+    opacity: 0;
+    visibility: hidden;
+}
+
+
+/* FIX FOR IMAGE HOVER */
+.reveal-img {
+    transition: none !important;
+}
+
+/* 2. The ready state (Add the transition properties) */
+.reveal-img.is-ready {
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
+                filter 0.7s ease-in-out !important;
+}

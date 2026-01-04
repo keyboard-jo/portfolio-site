@@ -16,12 +16,12 @@ const firstId = sortedPosts[sortedPosts.length - 1].data.id; // The earliest pos
 const lastId = sortedPosts[0].data.id;                      // The latest post ID
 ---
 
-<Layout>
+<Layout pageId='index'>
 	<div id="canvas-container"></div>
 	<main class="relative z-10 grid grid-cols-12 gap-6 px-6 py-12 min-h-screen bg-transparent text-brand-black font-sans">
 
-		<div class="col-span-12 min-h-screen flex flex-col">				
-			<Header/>
+		<div class="hero-section col-span-12 min-h-screen flex flex-col">				
+			<Header transition:persist/>
 
 			<div class="flex-grow flex items-center w-full">
 				<div class="w-full">
@@ -30,12 +30,14 @@ const lastId = sortedPosts[0].data.id;                      // The latest post I
 			</div>
 		</div>
 		
-		<div class="col-span-12 border-t-2 border-brand-black mt-24 mb-8 pt-2">
-			<span class="font-mono text-[10px] uppercase tracking-widest">
-				Selected Feed // {firstId === lastId ? firstId : `${firstId}—${lastId}`}
+		<div class="feed-container col-span-12 border-t-2 border-brand-black mt-24 mb-8 pt-2">
+			<span 
+				class="feed-id-display font-mono text-[10px] uppercase tracking-widest"
+				data-final-id={firstId === lastId ? firstId : `${firstId}—${lastId}`}
+			>
+				Selected Feed // ---
 			</span>
 		</div>
-
 		<section class="col-span-12">
 			{sortedPosts.map(post => (
 				<PostEntry 
@@ -60,69 +62,13 @@ const lastId = sortedPosts[0].data.id;                      // The latest post I
 			height: 100vh;  /* Takes full height of the viewport */
 			z-index: 0;
 		}
+		.reveal-item {
+			will-change: transform; /* Optimization for smoother movement */
+		}
+
+		/* Ensure the image container is actually hiding the scaled-up image */
+		.post-entry .overflow-hidden {
+			position: relative;
+		}
 	</style>
-
-	<script>
-		import * as THREE from 'three';
-		import { gsap } from 'gsap';
-
-		// 1. Setup variables in scope
-		let w, h;
-		const container = document.getElementById('canvas-container');
-
-		// 2. Initialize Renderer
-		const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-		const scene = new THREE.Scene();
-		const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000); // Aspect set to 1 for now
-
-		if (container) {
-			container.appendChild(renderer.domElement);
-			updateSize(); // Initial sizing
-		}
-
-		// 3. Reusable Sizing Logic
-		function updateSize() {
-			if (!container) return;
-			w = container.clientWidth;
-			h = container.clientHeight;
-			
-			camera.aspect = w / h;
-			camera.updateProjectionMatrix();
-			
-			renderer.setSize(w, h);
-			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-		}
-
-		// 4. Geometry & Mesh
-		const geometry = new THREE.IcosahedronGeometry(2, 2);
-		const material = new THREE.MeshBasicMaterial({ 
-			color: 0x000000, 
-			wireframe: true, 
-			transparent: true, 
-			opacity: 0.1 
-		});
-		const sphere = new THREE.Mesh(geometry, material);
-		scene.add(sphere);
-		camera.position.z = 5;
-
-		// 5. Animations
-		gsap.from("#hero-text", {
-			y: 100,
-			opacity: 0,
-			duration: 1.2,
-			ease: "expo.out",
-			delay: 0.2
-		});
-
-		function animate() {
-			requestAnimationFrame(animate);
-			sphere.rotation.y += 0.003;
-			sphere.rotation.x += 0.001;
-			renderer.render(scene, camera);
-		}
-		animate();
-
-		// 6. Listeners
-		window.addEventListener('resize', updateSize);
-	</script>
 </Layout>
