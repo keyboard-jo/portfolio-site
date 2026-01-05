@@ -10,6 +10,7 @@
 		"binding": "ASSETS",
 		"directory": "./dist"
 	},
+  "route": "https://happymediastrategy.xyz",
 	"observability": {
     "enabled": true
   }
