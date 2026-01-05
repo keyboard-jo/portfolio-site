@@ -1,4 +1,6 @@
 ---
+import { CDN_URL } from '../lib/constant';
+
 interface Props {
   id: string; 
   modelPath: string; 
@@ -22,6 +24,7 @@ const {
 } = Astro.props;
 
 const isTransparent = !bgColor || bgColor === 'transparent';
+const realModelPath = `${CDN_URL}${modelPath}`
 ---
 
 <figure class="my-12 model-3d-section" id={id}>
@@ -50,7 +53,7 @@ const isTransparent = !bgColor || bgColor === 'transparent';
 
       <canvas 
         class="three-canvas w-full h-full opacity-0 transition-opacity duration-700 outline-none pointer-events-none" 
-        data-model={modelPath}
+        data-model={realModelPath}
         data-intensity={intensity}
         data-alpha={isTransparent.toString()}
         data-zoom={zoom.toString()}

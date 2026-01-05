@@ -1,12 +1,13 @@
 ---
-import { Image, getImage } from 'astro:assets';
+// ZoomImage.astro
+import { CDN_URL } from '../lib/constant';
 import { cn } from '../lib/utils';
 
 interface Props {
-  src: ImageMetadata;
+  src: string;
   alt: string;
   width?: number;
-  quality?: number;
+  height?: number;     // Needed for PhotoSwipe aspect ratio
   class?: string;
   imageClass?: string;
   loading?: "lazy" | "eager";
@@ -17,38 +18,35 @@ const {
   src, 
   alt, 
   width = 1200, 
-  quality = 90, 
+  height = 800,       // Added default height
   class: className, 
   imageClass, 
   loading = "lazy",
   transitionName
 } = Astro.props;
 
-const highRes = await getImage({ 
-  src: src, 
-  width: src.width, 
-  format: 'webp',
-  quality: quality 
-});
-
+// Since these are on Cloudflare, we don't need 'getImage' anymore.
+// We just use the direct URL for the high-res version.
 const decoding = loading === "eager" ? "sync" : "async";
+
+const realSrc = `${CDN_URL}${src}?w=${width}&q=88`
+
+const thumbnailSrc = `${CDN_URL}${src}?w=1024&q=80`;
 ---
 
 <a 
-  href={highRes.src} 
-  data-pswp-width={src.width} 
-  data-pswp-height={src.height} 
+  href={realSrc} 
+  data-pswp-width={width} 
+  data-pswp-height={height} 
   target="_blank"
   class:list={["block cursor-zoom-in", className]}
 >
-  <Image 
-    src={src}
+  <img 
+    src={thumbnailSrc}
     alt={alt} 
-    transition:name={transitionName}
-    width={Math.min(width, src.width)}
+    style={transitionName ? `view-transition-name: ${transitionName}` : ''}
     loading={loading}
     decoding={decoding}
-    format="webp"
     class={cn("w-full h-auto", imageClass)} 
   />
 </a>

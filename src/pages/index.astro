@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import PostEntry from '../components/PostEntry.astro';
 import { getCollection } from 'astro:content';
+import { CDN_URL } from '../lib/constant';
 
 const allPosts = await getCollection('posts');
 

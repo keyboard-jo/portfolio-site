@@ -1,9 +1,10 @@
 ---
-import { Image } from 'astro:assets';
+import { CDN_URL } from '../lib/constant';
 
+// VideoWrapper.astro
 interface Props {
-  src: string;
-  poster: ImageMetadata | string;
+  src: string;             // Cloudflare R2 Video URL
+  poster: string;          // Cloudflare R2 Image URL
   title: string;
   description: string;
   label?: string
@@ -23,15 +24,19 @@ const {
   aspectRatio = "16/9" 
 } = Astro.props;
 
+// Schema.org metadata for Video SEO
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "VideoObject",
   "name": title,
   "description": description,
-  "thumbnailUrl": [typeof poster === 'string' ? poster : poster.src],
+  "thumbnailUrl": [poster], // Now always a string
   "uploadDate": uploadDate,
   "contentUrl": src,
 };
+
+const realSrc = `${CDN_URL}${src}`
+const realPoster = `${CDN_URL}${poster}?w=1024&q=80`
 ---
 
 <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
@@ -43,17 +48,13 @@ const jsonLd = {
   
   <div class="relative bg-neutral-100 overflow-hidden" style={`aspect-ratio: ${aspectRatio};`}>
     
-    {typeof poster === 'string' ? (
-      <img src={poster} alt={title} class="video-poster absolute inset-0 w-full h-full object-cover z-10" />
-    ) : (
-      <Image 
-        src={poster} 
-        alt={title} 
-        width={1920}
-        quality="high"
-        class="video-poster absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-500" 
-      />
-    )}
+    <img 
+      src={realPoster} 
+      alt={title} 
+      loading="lazy"
+      decoding="async"
+      class="video-poster absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-500" 
+    />
 
     <div class="absolute inset-0 flex items-center justify-center z-0">
       <div class="w-5 h-5 border-2 border-black/5 border-t-black animate-spin rounded-full"></div>
@@ -61,9 +62,10 @@ const jsonLd = {
 
     <video
       class="optimized-video absolute inset-0 w-full h-full opacity-0 z-20 transition-opacity duration-700 cursor-pointer"
-      data-src={src}
+      data-src={realSrc}
       preload="none"
       loop
+      muted
       playsinline
     ></video>
 
@@ -89,9 +91,7 @@ const jsonLd = {
     
     if (!video || !video.dataset.src) return;
 
-    // Start muted so autoplay works
-    video.muted = true;
-
+    // Intersection Observer for Autoplay/Pause
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -108,25 +108,20 @@ const jsonLd = {
 
     observer.observe(video);
 
+    // Cross-fade poster to video once playing
     video.addEventListener('playing', () => {
       video.classList.remove('opacity-0');
       poster.classList.add('opacity-0');
     });
 
-    // Toggle Audio
     unmuteBtn?.addEventListener('click', (e) => {
-      e.stopPropagation(); // Prevent play/pause toggle
+      e.stopPropagation();
       video.muted = !video.muted;
       unmuteBtn.textContent = video.muted ? 'Unmute' : 'Mute';
     });
 
-    // Toggle Play/Pause
     video.addEventListener('click', () => {
-      if (video.paused) {
-        video.play();
-      } else {
-        video.pause();
-      }
+      video.paused ? video.play() : video.pause();
     });
   }
 
@@ -134,6 +129,7 @@ const jsonLd = {
     document.querySelectorAll('.video-container').forEach(v => initOptimizedVideo(v as HTMLElement));
   }
 
+  // Handle both initial load and Astro View Transitions
   run();
   document.addEventListener('astro:after-swap', run);
 </script>

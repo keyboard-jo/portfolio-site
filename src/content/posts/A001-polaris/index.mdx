@@ -3,7 +3,9 @@ id: "A001"
 permalink: "polaris"
 title: "Polaris Spec Project"
 subtitle: "Full documentation of my first project, 'Polaris'"
-coverImage: "./polaris_cover_image.png"
+coverImage: "/a001/polaris_cover_image.png"
+coverWidth: 2048
+coverHeight: 2048
 date: 2026-01-02
 tags: ["AI", "3D Modelling", "Video Editting", "Graphic Design", "Affinity", "Davinci Resolve", "Blender", "Nano Banana"]
 ---
@@ -14,12 +16,6 @@ import LessonLearned from '../../../components/LessonLearned.astro';
 import Model3DScene from '../../../components/Model3DScene.astro';
 import VideoPlayer from '../../../components/VideoPlayer.astro';
 import Credits from '../../../components/Credits.astro';
-import posterImage from './a001_video_thumbnail_1.png';
-import imgBefore from './before_hero.png';
-import imgAfter from './after_hero.png';
-import imgOutfit from './outfit_board.png';
-import imgMasterHorizontal from './Master Horizontal_v1.0_P_3840_2160.png';
-import imgMasterVertical from './Master Vertical_v1.1_P_2000_2500.png';
 
 export const projectCredits = [
   { role: "Soda Can Tutorial", name: "Pete Designs", link: "https://www.youtube.com/watch?v=Miuv0-OWv6E&t=439s" },
@@ -37,7 +33,6 @@ export const projectCredits = [
 ];
 
 
-
 ## 00 // Concept & The Spec Project
 The real reason for this spec project was to see if I could pull off a hybrid workflow—integrating generative AI into a traditional design process. I've always had an interest in graphic design and 3D modeling, but I studied Computer Science in university. I got hooked by posts on Instagram showing how realistically you can generate characters using Nano Banana Pro, so I created Polaris.
 
@@ -48,7 +43,7 @@ Moving into Blender, I followed this [tutorial][soda-can-video] by Pete Design t
 
 <Model3DScene 
   id="can-polaris"
-  modelPath="/models/polaris_can.glb"
+  modelPath="/a001/polaris_can.glb"
   label="beer_can"
   caption="FIG 02. // Polaris beer can"
   intensity={1.5}
@@ -57,18 +52,22 @@ Moving into Blender, I followed this [tutorial][soda-can-video] by Pete Design t
 Once I had the can rendered, I moved on to the character. I started by creating an outfit board to keep the look consistent. I used that to generate a 3/4 shot of my character in a neutral pose to serve as a master reference.
 
 <SingleImage
-  img={imgOutfit}
+  img="/a001/outfit_board.png"
   label="outfit_board"
   caption="FIG 03. // The reference board for the outfit"
+  width={1920}
+  height={1080}
 />
 
 Then came the "Hero Shot" for the first poster: the character drinking from the can. This was much harder than I anticipated. The first generations were okay, but I struggled to get the pose right—getting the face, the hands, the zoom, and the outfit details to align was a battle. I learned to work in stages: first the pose, then the zoom, then the details.
 
 <ImagePair 
-  imgOne={imgBefore} 
-  imgTwo={imgAfter} 
+  imgOne="/a001/after_hero.png"
+  imgTwo="/a001/before_hero.png"
   labelOne="Before_Hero" 
   labelTwo="After_Hero"
+  width={2048}
+  height={2048}
   caption="FIG 04. // Comparison of initial hero checkpoint to final hero image"
 />
 
@@ -145,14 +144,18 @@ Because I'm using the free version of DaVinci, I had to manually mask and track 
 ## 06 // The Final Result
 
 <SingleImage
-  img={imgMasterHorizontal}
+  img="/a001/Master_Horizontal_v1.0_P_3840_2160.png"
   label="master_horizontal"
+  width={2048}
+  height={1152}
   caption="FIG 05. // The horizontal master image"
 />
 
 <SingleImage
-  img={imgMasterVertical}
+  img="/a001/Master_Vertical_v1.1_P_2000_2500.png"
   label="master_vertical"
+  width={1920}
+  height={2400}
   caption="FIG 06. // The vertical master image"
 />
 
@@ -160,8 +163,8 @@ Because I'm using the free version of DaVinci, I had to manually mask and track 
   title="Final Polaris Video Thumbnail"
   label="master_video"
   description="The final video product for my polaris spec project. A cinematic shot of the 3D beer can followed by AI generated video of character picking the beer can up"
-  src="/videos/Polaris_v1.1_P_1080p.mp4"
-  poster={posterImage}
+  src="/a001/Polaris_v1.1_P_1080p.mp4"
+  poster="/a001/a001_video_thumbnail_1.png"
   aspectRatio="16/9"
   caption="FIG 07. // The master video"
 />

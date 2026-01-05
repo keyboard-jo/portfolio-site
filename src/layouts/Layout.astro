@@ -72,6 +72,8 @@ const { title = "Happy Media Strategy", pageId = "default" } = Astro.props;
                 link.setAttribute('rel', 'noopener noreferrer');
                 });
 
+                initPhotoSwipe();
+
                 // --- C. PAGE ROUTING ---
                 switch (pageId) {
                 case 'index':

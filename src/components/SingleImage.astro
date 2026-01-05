@@ -1,14 +1,16 @@
 ---
+// SingleImage.astro
 import ZoomImage from './ZoomImage.astro';
 
 interface Props {
-  img: ImageMetadata;
+  img: string;      // Changed from ImageMetadata to string
   label?: string;
   caption?: string;
-  width?: number; 
+  width?: number;   // The natural width of the R2 asset
+  height?: number;  // The natural height of the R2 asset
 }
 
-const { img, label, caption, width } = Astro.props; 
+const { img, label, caption, width = 1200, height = 800 } = Astro.props; 
 ---
 
 <figure class="my-12 pswp-gallery">
@@ -24,6 +26,7 @@ const { img, label, caption, width } = Astro.props;
       src={img} 
       alt={caption || label || "Descriptive image"} 
       width={width} 
+      height={height}
       imageClass="border border-black/5"
     />
   </div>

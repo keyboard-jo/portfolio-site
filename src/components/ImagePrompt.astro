@@ -1,16 +1,26 @@
 ---
+// AIWrapper.astro
 import SingleImage from './SingleImage.astro';
 
 interface Props {
-  img: ImageMetadata;
+  img: string;
   prompt: string;
   label?: string;
   caption?: string;
   model?: string;
-  width?: number;
+  width?: number;   // Original Asset Width
+  height?: number;  // Original Asset Height
 }
 
-const { img, prompt, label, caption, model, width } = Astro.props;
+const { 
+  img, 
+  prompt, 
+  label, 
+  caption, 
+  model, 
+  width = 1200, 
+  height = 800 
+} = Astro.props;
 ---
 
 <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
@@ -21,6 +31,7 @@ const { img, prompt, label, caption, model, width } = Astro.props;
       label={label || "AI_GENERATED_VISUAL"} 
       caption={caption} 
       width={width} 
+      height={height}
     />
   </div>
 

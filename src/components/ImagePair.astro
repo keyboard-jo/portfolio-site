@@ -1,16 +1,26 @@
 ---
+// DoubleImageWrapper.astro
 import ZoomImage from './ZoomImage.astro';
 
 interface Props {
-  imgOne: ImageMetadata;
-  imgTwo: ImageMetadata;
+  imgOne: string;      // Changed from ImageMetadata to string
+  imgTwo: string;      // Changed from ImageMetadata to string
   labelOne?: string;
   labelTwo?: string;
   caption?: string;
-  width?: number; // Optional: width for each individual image
+  width?: number;      // Individual image width
+  height?: number;     // Individual image height
 }
 
-const { imgOne, imgTwo, labelOne, labelTwo, caption, width } = Astro.props;
+const { 
+  imgOne, 
+  imgTwo, 
+  labelOne, 
+  labelTwo, 
+  caption, 
+  width = 1200, 
+  height = 800 
+} = Astro.props;
 ---
 
 <figure class="my-12 pswp-gallery">
@@ -27,6 +37,7 @@ const { imgOne, imgTwo, labelOne, labelTwo, caption, width } = Astro.props;
         src={imgOne} 
         alt={labelOne || "Image one"} 
         width={width}
+        height={height}
         imageClass="border border-black/5"
       />
     </div>
@@ -42,6 +53,7 @@ const { imgOne, imgTwo, labelOne, labelTwo, caption, width } = Astro.props;
         src={imgTwo} 
         alt={labelTwo || "Image two"} 
         width={width}
+        height={height}
         imageClass="border border-black/5"
       />
     </div>

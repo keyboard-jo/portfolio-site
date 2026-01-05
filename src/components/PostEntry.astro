@@ -1,16 +1,21 @@
 ---
-import Image from "astro/components/Image.astro";
+import { CDN_URL } from '../lib/constant';
 
+// PostEntry.astro
 interface Props {
   id: string;
   title: string;
   subtitle: string;
-  coverImage: any; // Or 'ImageMetadata' if you want to be super specific
-  date: Date;      // This is now a proper JS Date object
+  coverImage: string; // Changed from any/ImageMetadata to string
+  date: Date;
   url: string;
 }
 
 const { id, title, subtitle, coverImage, url, date } = Astro.props;
+
+// 1. Create an optimized thumbnail URL
+// We request 1200px width, 80% quality, and WebP format 
+const thumbnailUrl = `${CDN_URL}${coverImage}?w=1024&q=80`;
 
 const formattedDate = date.toLocaleDateString('sv-SE');
 ---
@@ -41,13 +46,15 @@ const formattedDate = date.toLocaleDateString('sv-SE');
     </div>
 
     <div class="hidden md:block md:col-span-3">
-        <div class="overflow-hidden aspect-[4/3] border border-brand-black/5">
-            <Image 
-                src={coverImage} 
+        <div class="overflow-hidden aspect-[4/3] border border-brand-black/5 bg-neutral-100">
+            <img 
+                src={thumbnailUrl} 
                 alt={title} 
-                width={600} 
-                height={450}
-                class="reveal-img w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 hover:scale-110" 
+                width={1024} 
+                height={1024}
+                loading="lazy"
+                decoding="async"
+                class="reveal-img w-full h-full object-cover grayscale contrast-125 group-hover:grayscale-0 group-hover:scale-110" 
             />
         </div>
     </div>
