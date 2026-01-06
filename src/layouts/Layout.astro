@@ -16,6 +16,10 @@ const { title = "Happy Media Strategy", pageId = "default" } = Astro.props;
         <ClientRouter />
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
+        <link rel="icon" href="/favicon.svg">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
         <title>{title}</title>
     </head>
     <body data-page-id={pageId}>
@@ -122,7 +126,18 @@ const { title = "Happy Media Strategy", pageId = "default" } = Astro.props;
                 entryTl.set(revealItems, { y: "110%", autoAlpha: 0 })
                         .to(revealItems, { autoAlpha: 1, y: "0%", duration: 0.8, stagger: 0.05 });
                 if (entryImg) {
-                    entryTl.fromTo(entryImg, { autoAlpha: 0, scale: 1.4 }, { autoAlpha: 1, scale: 1, duration: 1.6, clearProps: "transform" }, "-=0.8");
+                    entryTl.fromTo(entryImg, 
+                        { autoAlpha: 0, scale: 1.4 }, 
+                        { 
+                            autoAlpha: 1, 
+                            scale: 1, 
+                            duration: 1.6, 
+                            clearProps: "transform",
+                            // Add the class when this specific animation finishes
+                            onComplete: () => entryImg.classList.add('is-ready')
+                        }, 
+                        "-=0.8"
+                    );
                 }
                 });
             }
