@@ -2,18 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-
-
-interface Props {
-  status: 'OPEN' | 'CLOSE';
-}
-
-const { status = 'CLOSE' } = Astro.props;
-
-const isFieldOpen = status === 'OPEN';
-const colorClass = isFieldOpen ? 'bg-green-500' : 'bg-red-500';
-const pingClass = isFieldOpen ? 'bg-green-400' : 'bg-red-400';
-const textClass = isFieldOpen ? 'text-green-700' : 'text-red-700';
 ---
 
 <Layout title="About / Happy Media Strategy" pageId='about'>
@@ -91,18 +79,42 @@ const textClass = isFieldOpen ? 'text-green-700' : 'text-red-700';
               </div>
           </div>
 
-          <div 
-              x-data={`{ currentStatus: '${status}' }`}
-              class="font-mono text-[10px] uppercase flex items-center gap-2"
+          <div
+            x-data="{
+              currentStatus: 'loading',
+              async init() {
+                try {
+                  const res = await fetch('/api/status');
+                  const data = await res.json();
+                  this.currentStatus = data.status;
+                  setInterval(() => this.init(), 30000);
+                } catch (e) {
+                  this.currentStatus = 'error';
+                }
+              }
+            }"
+            class="font-mono text-[10px] uppercase flex items-center gap-2"
           >
-              <span class="relative flex h-2 w-2">
-                  <span class={`absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping ${pingClass}`}></span>
-                  <span class={`relative inline-flex rounded-full h-2 w-2 ${colorClass}`}></span>
-              </span>
-              <span class={`font-bold tracking-widest ${textClass}`}>
-                  Status: <span x-text="currentStatus"></span>_FOR_COMMISSION
-              </span>
+            <span class="relative flex h-2 w-2">
+              <span
+                class="absolute inline-flex h-full w-full rounded-full opacity-75 animate-ping"
+                :class="currentStatus === 'open' ? 'bg-green-500' : 'bg-red-500'"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-2 w-2"
+                :class="currentStatus === 'open' ? 'bg-green-500' : 'bg-red-500'"
+              ></span>
+            </span>
+
+            <span
+              class="font-bold tracking-widest"
+              :class="currentStatus === 'open' ? 'text-green-400' : 'text-red-400'"
+            >
+              Status:
+              <span x-text="currentStatus"></span>_FOR_COMMISSION
+            </span>
           </div>
+
       </div>
     </section>
 
