@@ -3,11 +3,14 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
+      "dev": "astro dev",
+      "build": "astro build",
+      "preview": "astro preview",
+      "cf:dev": "wrangler pages dev dist",
+      "cf:build": "astro build && wrangler pages dev dist",
+      "cf:kv:seed": "wrangler kv:key put status open --binding=KV",
+      "astro": "astro"
+    },
   "dependencies": {
     "@astrojs/alpinejs": "^0.4.9",
     "@astrojs/cloudflare": "^12.6.12",
