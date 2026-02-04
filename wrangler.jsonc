@@ -16,7 +16,16 @@
       "id": "03ed6495fe9c48d384e6ab23825e6367"
     }
   ],
-  "route": "https://happymediastrategy.xyz",
+  "routes": [
+    {
+      "pattern": "happymediastrategy.xyz",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.happymediastrategy.xyz",
+      "custom_domain": true
+    }
+  ],
 	"observability": {
     "enabled": true
   }
